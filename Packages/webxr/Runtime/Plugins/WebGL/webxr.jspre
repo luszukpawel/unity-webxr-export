@@ -412,12 +412,14 @@ void main()
         var onUnityLoaded = this.unityLoaded.bind(this);
         var onToggleHitTest = this.toggleHitTest.bind(this);
         var onCallHapticPulse = this.hapticPulse.bind(this);
+        var onSetFixedFoveation = this.setFixedFoveation.bind(this);
 
         Module.WebXR.onUnityLoaded = onUnityLoaded;
         Module.WebXR.toggleAR = onToggleAr;
         Module.WebXR.toggleVR = onToggleVr;
         Module.WebXR.toggleHitTest = onToggleHitTest;
         Module.WebXR.callHapticPulse = onCallHapticPulse;
+        Module.WebXR.setFixedFoveation = onSetFixedFoveation;
       }
     
       XRManager.prototype.onRequestARSession = function () {
@@ -691,7 +693,23 @@ void main()
           controller.gamepad.hapticActuators[0].pulse(hapticPulseAction.detail.intensity, hapticPulseAction.detail.duration);
         }
       }
-    
+
+      XRManager.prototype.applyFixedFoveation = function (glLayer, level) {
+        // fixedFoveation is optional in the spec, only some browsers (e.g. Meta Quest Browser) expose it
+        if (glLayer && 'fixedFoveation' in glLayer) {
+          glLayer.fixedFoveation = level;
+        }
+      }
+
+      XRManager.prototype.setFixedFoveation = function (level) {
+        var webXRSettings = this.gameModule.WebXR.Settings;
+        webXRSettings.UseFixedFoveation = true;
+        webXRSettings.FixedFoveation = level;
+        if (this.xrSession && this.xrSession.isInSession) {
+          this.applyFixedFoveation(this.xrSession.renderState.baseLayer, level);
+        }
+      }
+
       XRManager.prototype.setGameModule = function (gameModule) {
         if (gameModule && !this.gameModule) {
           this.gameModule = gameModule;
@@ -1015,6 +1033,9 @@ void main()
           glLayerOptions.framebufferScaleFactor = scaleFactor;
         }
         var glLayer = new XRWebGLLayer(session, this.ctx, glLayerOptions);
+        if (webXRSettings.UseFixedFoveation) {
+          this.applyFixedFoveation(glLayer, webXRSettings.FixedFoveation);
+        }
         session.updateRenderState({ baseLayer: glLayer });
         
         var refSpaceType = 'viewer';

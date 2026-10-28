@@ -56,6 +56,10 @@ var LibraryWebXR = {
   PreRenderSpectatorCamera: function() {
     Module.WebXR.startRenderSpectatorCamera();
   },
+
+  SetFixedFoveation: function(level) {
+    Module.WebXR.setFixedFoveation(level);
+  },
 }
 
 mergeInto(LibraryManager.library, LibraryWebXR);

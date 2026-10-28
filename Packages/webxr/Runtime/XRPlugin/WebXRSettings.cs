@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.XR.Management;
 
@@ -43,6 +44,14 @@ Default is the recommended resolution. Can be different than native resolution."
 Default is 1.0, the recommended resolution.")]
     [Range(0.2f,2.0f)]
     public float FramebufferScaleFactor = 1.0f;
+    [Tooltip(@"Should set XRWebGLLayer.fixedFoveation when an immersive session starts?
+Fixed Foveated Rendering lowers the resolution at the edges of the view, where the lens blurs anyway.
+Ignored by browsers/devices that don't support it. Can be changed at runtime with WebXRManager.SetFixedFoveation.")]
+    public bool UseFixedFoveation = false;
+    [Tooltip(@"If ""Use Fixed Foveation"" is true, the foveation level.
+0 is no foveation, 1 is maximum foveation.")]
+    [Range(0.0f,1.0f)]
+    public float FixedFoveation = 0.5f;
     [Tooltip(@"Should WebXRManager be created on start or manually by the developer.")]
     public bool AutoLoadWebXRManager = true;
     [Tooltip(@"Should WebXRInputSystem be created on start or manually by the developer.
@@ -92,7 +101,9 @@ If XRDisplaySubsystem is disabled use the WebXRCamera component.")]
         ""AROptionalFeatures"": {FlagsToString(AROptionalFeatures)},
         ""UseFramebufferScaleFactor"": {(UseFramebufferScaleFactor ? "true" : "false")},
         ""UseNativeResolution"": {(UseNativeResolution ? "true" : "false")},
-        ""FramebufferScaleFactor"": {FramebufferScaleFactor}
+        ""FramebufferScaleFactor"": {FramebufferScaleFactor.ToString(CultureInfo.InvariantCulture)},
+        ""UseFixedFoveation"": {(UseFixedFoveation ? "true" : "false")},
+        ""FixedFoveation"": {FixedFoveation.ToString(CultureInfo.InvariantCulture)}
 }}";
       return result;
     }

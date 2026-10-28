@@ -285,6 +285,9 @@ namespace WebXR
       public static extern void ControllerPulse(int controller, float intensity, float duration);
 
       [DllImport("__Internal")]
+      public static extern void SetFixedFoveation(float level);
+
+      [DllImport("__Internal")]
       public static extern void PreRenderSpectatorCamera();
 
       [DllImport("__Internal")]
@@ -518,6 +521,13 @@ namespace WebXR
     {
 #if UNITY_WEBGL
       Native.ControllerPulse((int)hand, intensity, duration);
+#endif
+    }
+
+    public void SetFixedFoveation(float level)
+    {
+#if UNITY_WEBGL
+      Native.SetFixedFoveation(Mathf.Clamp01(level));
 #endif
     }
 

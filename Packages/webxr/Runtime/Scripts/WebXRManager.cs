@@ -118,6 +118,12 @@ namespace WebXR
       subsystem?.HapticPulse(hand, intensity, duration);
     }
 
+    // level from 0 (no foveation) to 1 (maximum), applied to the current session and the next ones
+    public void SetFixedFoveation(float level)
+    {
+      subsystem?.SetFixedFoveation(level);
+    }
+
     public void PreRenderSpectatorCamera()
     {
       subsystem?.PreRenderSpectatorCamera();
